@@ -1,124 +1,183 @@
-# Thriftly SA
+# ThriftlySA – Android Clothing Marketplace
 
-Thriftly SA is an Android marketplace concept for buying and selling pre-owned goods. It is built with Kotlin, Jetpack Compose and Retrofit, with a REST API expected to provide authentication, listings and favourites.
+## 1. Project Overview
 
-## Features currently included
-- Account registration and email/password login through the REST API.
-- Home feed for available listings.
-- Search by title/description and category filters.
-- Create and publish a listing with input validation.
-- Favourite/unfavourite listings.
-- Profile preferences for language, notifications and dark-mode preference.
-- Encrypted local storage for session and preference values using AndroidX Security Crypto.
-- Offline listing submission queue backed by SQLite. When the Home screen is opened while connected, queued listings are retried against the API.
-- Basic unit tests for input validation.
-- GitHub Actions workflow to run unit tests and assemble a debug APK.
+ThriftlySA is an Android-based clothing marketplace developed using Kotlin and Jetpack Compose. The application provides users with a platform to browse, search, and publish second-hand clothing listings.
 
-## Technology
-- Kotlin and Jetpack Compose
-- Retrofit 3 and Gson
-- Kotlin Coroutines
-- SQLite (offline pending-listing queue)
-- AndroidX Security Crypto
-- JUnit 4
+The aim of ThriftlySA is to encourage sustainable fashion by making it easier for people to buy and sell pre-loved clothing. The application combines online services with offline functionality to improve accessibility and the overall user experience.
 
-## Requirements
-- Android Studio with a compatible Android SDK
-- JDK 17
-- A reachable Thriftly SA REST API with the endpoints listed below
+## 2. Main Features
 
-## Configure the REST API
-The API base URL is no longer hard-coded in `ApiClient.kt`. Set it in the project's `gradle.properties`:
+- **User Registration and Login:** Users can create accounts and securely access the application.
+- **Google Sign-In:** Users can authenticate using their Google accounts.
+- **Home Screen:** Displays available clothing listings.
+- **Search and Filtering:** Users can search for clothing and browse listings by category.
+- **Sell Clothing:** Users can publish their own clothing listings.
+- **Favourites:** Users can save clothing listings they are interested in.
+- **Offline Access:** Previously cached clothing listings remain accessible without an internet connection.
+- **Data Synchronisation:** Supported saved data, including favourites, can synchronise when connectivity is restored.
+- **Push Notifications:** Firebase Cloud Messaging supports notifications on user devices.
+- **Profile Management:** Users can access their profile and application settings.
 
-```properties
-THRIFTLY_API_BASE_URL=http://10.0.2.2/thriftly/
-```
+## 3. Technologies Used
 
-`10.0.2.2` is the Android emulator alias for the host computer. For a physical Android phone, replace it with the computer/server's LAN IP address, for example `http://192.168.1.10/thriftly/`. Both devices must be on the same network. Use HTTPS for a production deployment.
+| Technology | Purpose |
+|---|---|
+| Kotlin | Main programming language |
+| Android Studio | Development environment |
+| Jetpack Compose | User interface development |
+| Supabase | Backend services and data management |
+| Firebase Cloud Messaging | Push notifications |
+| Google Sign-In | Google authentication |
+| Retrofit | API communication |
+| Room Database | Local data caching |
+| EncryptedSharedPreferences | Secure local preference storage |
+| Coroutines | Asynchronous operations |
+| Git and GitHub | Version control and source code management |
 
-The app expects these endpoints:
-- `POST register.php`
-- `POST login.php`
-- `GET listings.php`
-- `POST create_listing.php`
-- `POST favourite.php`
+## 4. Application Requirements
 
-Request and response fields are defined in `ApiModels.kt` and `ApiService.kt`. The PHP/API backend is not included in this Android project ZIP.
+To build and run the application, you need:
 
-## Offline synchronisation
-When a listing cannot be submitted because the API connection fails, the app saves its request in a local SQLite queue and informs the user. The next time the Home screen loads and the API is reachable, pending listing submissions are sent and removed from the queue after the server confirms success. This is a focused offline feature, not full offline browsing.
+- Android Studio.
+- Android SDK.
+- Kotlin support.
+- An Android device or emulator.
+- An internet connection for online functionality.
+- A configured Supabase project.
+- A configured Firebase project.
 
-## Security notes
-- The app encrypts locally stored session/preferences. It does not persist the user's plain-text password.
-- Password hashing/encryption must also be implemented by the server. The backend should hash passwords with a password-specific algorithm such as Argon2id or bcrypt and verify hashes during login. Client-side encryption alone does not protect server credentials.
-- Production deployment should use HTTPS, validate all server inputs, and avoid exposing secrets in the Android app.
+**Minimum Android version:** Android 7.0 (API 24), subject to the project's configured minimum SDK.
 
-## Important remaining Part 3 integration work
-Some rubric requirements cannot be completed or verified from this ZIP alone because the required external services and configuration are not present:
-1. **SSO:** configure a real identity provider (for example Google Sign-In/Firebase Authentication), create OAuth credentials for the final package/signing certificate, and connect it to the backend.
-2. **NoSQL database and blob storage:** configure a hosted service (such as Firebase/Firestore plus Cloud Storage, or another suitable provider) and implement its backend integration. The current app's REST API backend is external and was not included.
-3. **Push notifications:** configure Firebase Cloud Messaging, add the Firebase project configuration and server-side push sender, then test on a physical device.
-4. **Two-language support:** the settings screen currently stores a language preference, but the full app interface still needs translated Android string resources and runtime locale switching for at least two South African languages.
-5. **Play Store evidence:** generate a signed release build, capture store screenshots, complete the Play Console listing and provide the required evidence.
-6. **Demonstration video:** record the completed app on a physical Android phone with voice-over, including evidence of the hosted authentication/API/database records.
+**Application package:** `com.example.thriftlysa`
 
-These require service credentials, a deployed backend, a physical phone and/or account access. They should not be represented as completed until tested.
+## 5. Installation and Setup
 
-## Build and test
-From the project root:
+### Step 1: Clone the Repository
+
+Clone the project from GitHub:
 
 ```bash
-./gradlew testDebugUnitTest
-./gradlew assembleDebug
+https://github.com/ST10441779/Thriftly-SA-Part-3.git
 ```
 
-On Windows:
+Alternatively, download the repository as a ZIP file and extract it.
 
-```bat
-gradlew.bat testDebugUnitTest
-gradlew.bat assembleDebug
+### Step 2: Open the Project
+
+1. Open Android Studio.
+2. Select **Open**.
+3. Navigate to the extracted ThriftlySA project.
+4. Select the project folder.
+5. Allow Gradle to synchronise.
+
+### Step 3: Configure Firebase
+
+1. Open the Firebase Console.
+2. Select the ThriftlySA Firebase project.
+3. Register the Android application using the package name `com.example.thriftlysa`.
+4. Download `google-services.json`.
+5. Place the file inside the `app/` directory.
+
+### Step 4: Configure Supabase
+
+Configure the Supabase project URL and publishable key using the project's existing configuration.
+
+Do not publish private credentials, service-role keys, passwords, or other sensitive information in the GitHub repository.
+
+### Step 5: Run the Application
+
+1. Connect an Android device or start an emulator.
+2. Enable USB debugging if using a physical device.
+3. Select the ThriftlySA run configuration.
+4. Click **Run** in Android Studio.
+
+## 6. Offline Functionality
+
+ThriftlySA includes offline functionality to improve accessibility when users have limited or no internet connectivity.
+
+The application supports:
+
+- Accessing previously cached clothing listings.
+- Viewing locally saved data.
+- Retaining favourites for synchronisation.
+- Synchronising supported information when the device reconnects to the internet.
+
+Some application functions still require an active internet connection, including online authentication and communication with backend services.
+
+## 7. Push Notifications
+
+Firebase Cloud Messaging (FCM) is integrated into ThriftlySA.
+
+The application can receive push notifications on supported Android devices. Notifications are handled through a Firebase messaging service.
+
+## 8. Testing
+
+The application should be tested using the following scenarios:
+
+- Registering a new user.
+- Logging in with existing credentials.
+- Signing in using Google.
+- Browsing clothing listings.
+- Searching and filtering clothing.
+- Publishing a clothing listing.
+- Adding and removing favourites.
+- Accessing cached listings while offline.
+- Restoring internet connectivity and checking synchronisation.
+- Receiving a Firebase test notification.
+- Logging out of the application.
+
+## 9. Project Structure
+
+The Android application follows a Kotlin-based project structure.
+
+```text
+ThriftlySA/
+│
+├── app/
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       │   └── com/example/thriftlysa/
+│   │       │       ├── MainActivity.kt
+│   │       │       ├── ApiService.kt
+│   │       │       ├── SecurePreferences.kt
+│   │       │       ├── ThriftlyFirebaseMessagingService.kt
+│   │       │       └── Other application files
+│   │       │
+│   │       ├── res/
+│   │       └── AndroidManifest.xml
+│   │
+│   └── build.gradle.kts
+│
+├── gradle/
+│   └── libs.versions.toml
+│
+├── build.gradle.kts
+├── settings.gradle.kts
+└── README.md
 ```
 
-The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`.
+*Note: The structure above illustrates the main project organisation. The actual source files includes additional folders and classes.*
 
-## GitHub Actions
-The workflow in `.github/workflows/android.yml` runs unit tests and assembles the debug APK on pushes and pull requests.
+## 10. Future Improvements
 
-## Release notes — Part 3 update
-- Replaced the fixed API address with a Gradle-configurable API base URL.
-- Added encrypted local preferences for session and app settings.
-- Added a SQLite-backed offline queue for listing submissions and retry-on-home-load synchronisation.
-- Added validation unit tests and a GitHub Actions Android build workflow.
-- Added project setup, security, offline behaviour and remaining integration requirements to this README.
+Possible future improvements include:
 
-## Demonstration video
-Add your unlisted YouTube demonstration link here after recording: **[YouTube demonstration link]**
+- Expanding offline listing creation and automatic upload.
+- Implementing user-specific push notifications.
+- Adding additional language support, including isiZulu and isiXhosa.
+- Improving listing image management.
+- Expanding automated testing.
+- Improving accessibility and user interface customisation.
 
-## AI tools disclosure
-AI assistance may be used to help inspect code, identify defects, draft documentation and suggest implementation changes. The developer must review, run, understand and test all generated or modified code, and disclose the specific assistance used in the final submission according to the institution's referencing requirements.
+## 11. Author
 
-## Supabase authentication configuration
+**Project Name:** ThriftlySA  
+**Platform:** Android  
+**Programming Language:** Kotlin  
+**Development Environment:** Android Studio
 
-ThriftlySA now uses Supabase Auth for email/password registration and sign-in. The Android app sends authentication requests over HTTPS to the configured Supabase project. Supabase, rather than the app, securely hashes and verifies passwords. The app does not save raw passwords. On successful sign-in, the access token, refresh token, and Supabase user UUID are stored using Android EncryptedSharedPreferences.
+## 12. Conclusion
 
-The project is configured with the Supabase project URL and **publishable** key supplied for ThriftlySA. A publishable key is intended for client-side use; never replace it with a Supabase secret key or service-role key.
-
-### Supabase dashboard setup
-
-1. Open the ThriftlySA project in the Supabase Dashboard.
-2. Go to **Authentication → Providers → Email** and make sure Email provider is enabled.
-3. Keep email confirmation enabled for normal use. After registering, users must open the confirmation email before signing in. For a quick classroom test only, you may temporarily turn off email confirmation in the Email provider settings.
-4. In **Authentication → Users**, check that a newly registered account appears.
-5. Test registration with an email address you can access, confirm it if required, then sign in using the same email and password.
-
-No manual SQL table is required for Supabase Auth to create accounts. The user's display name is saved as Auth user metadata (`full_name` and `name`).
-
-### Important backend status
-
-This change migrates **registration and login** to Supabase Auth. Product listing, creating listings, and favourites still use the separate legacy PHP API configured by `THRIFTLY_API_BASE_URL` (default: `http://10.0.2.2/thriftly/`). Those features will need their own Supabase database/API migration or a deployed PHP backend before they can work on a physical phone. Do not treat the listings backend as migrated just because Supabase login works.
-
-### Supabase auth implementation references
-
-- Supabase, *Use Supabase with Android Kotlin*: https://supabase.com/docs/guides/getting-started/quickstarts/kotlin
-- Supabase, *Kotlin: Create a new user*: https://supabase.com/docs/reference/kotlin/auth-signup
-- Supabase, *Kotlin: Initializing*: https://supabase.com/docs/reference/kotlin/initializing
+ThriftlySA provides a digital platform for buying and selling second-hand clothing. By combining a user-friendly Android interface, backend integration, offline data access and push notifications, the application aims to make sustainable fashion more accessible and convenient.
